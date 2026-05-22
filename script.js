@@ -34,6 +34,24 @@ const questions = [
 let currentIndex = 0;
 let score = 0;
 let answered = false;
+let activeQuestions = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function prepareQuiz() {
+  return shuffle(questions).map(q => {
+    const correctText = q.choices[q.correct];
+    const shuffledChoices = shuffle(q.choices);
+    return { ...q, choices: shuffledChoices, correct: shuffledChoices.indexOf(correctText) };
+  });
+}
 
 const startScreen   = document.getElementById("start-screen");
 const questionScreen = document.getElementById("question-screen");
@@ -60,14 +78,15 @@ function showScreen(screen) {
 function startQuiz() {
   currentIndex = 0;
   score = 0;
+  activeQuestions = prepareQuiz();
   showScreen(questionScreen);
   renderQuestion();
 }
 
 function renderQuestion() {
   answered = false;
-  const q = questions[currentIndex];
-  const total = questions.length;
+  const q = activeQuestions[currentIndex];
+  const total = activeQuestions.length;
 
   progressBar.style.width = `${(currentIndex / total) * 100}%`;
   progressText.textContent = `第 ${currentIndex + 1} 問 / ${total} 問`;
@@ -91,7 +110,7 @@ function selectAnswer(selectedIndex) {
   if (answered) return;
   answered = true;
 
-  const q = questions[currentIndex];
+  const q = activeQuestions[currentIndex];
   const buttons = choicesEl.querySelectorAll(".choice-btn");
 
   buttons.forEach(btn => btn.disabled = true);
@@ -109,12 +128,12 @@ function selectAnswer(selectedIndex) {
   }
 
   nextBtn.classList.remove("hidden");
-  nextBtn.textContent = currentIndex < questions.length - 1 ? "次の問題へ" : "結果を見る";
+  nextBtn.textContent = currentIndex < activeQuestions.length - 1 ? "次の問題へ" : "結果を見る";
 }
 
 function showNext() {
   currentIndex++;
-  if (currentIndex < questions.length) {
+  if (currentIndex < activeQuestions.length) {
     renderQuestion();
   } else {
     showResult();
@@ -122,7 +141,7 @@ function showNext() {
 }
 
 function showResult() {
-  const total = questions.length;
+  const total = activeQuestions.length;
   progressBar.style.width = "100%";
 
   scoreText.textContent = `${total}問中 ${score}問 正解！`;
