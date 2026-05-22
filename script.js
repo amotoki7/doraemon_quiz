@@ -1,4 +1,4 @@
-const questions = [
+const questionPool = [
   {
     question: "ドラえもんの誕生日は何年何月何日でしょう？",
     choices: ["2112年9月3日", "2112年8月3日", "2112年10月3日", "2112年7月3日"],
@@ -28,8 +28,40 @@ const questions = [
     choices: ["ドラコ", "ドラベル", "ドラミ", "ドラリン"],
     correct: 2,
     explanation: "ドラえもんの妹は「ドラミちゃん」です。ドラえもんよりも高性能で、好物はメロンパンです。"
+  },
+  {
+    question: "ジャイアンの本名は何でしょう？",
+    choices: ["剛田健", "剛田猛", "剛田武", "剛田強"],
+    correct: 2,
+    explanation: "ジャイアンの本名は「剛田武（ごうだたけし）」です。力持ちで歌が大好きなキャラクターです。"
+  },
+  {
+    question: "しずかちゃんのフルネームは何でしょう？",
+    choices: ["泉静香", "水野静香", "源静香", "池田静香"],
+    correct: 2,
+    explanation: "しずかちゃんのフルネームは「源静香（みなもとしずか）」です。バイオリンとお風呂が大好きです。"
+  },
+  {
+    question: "ドラえもんはもともと何色だったでしょう？",
+    choices: ["白色", "黄色", "赤色", "緑色"],
+    correct: 1,
+    explanation: "ドラえもんはもともと黄色でした。ネズミに耳をかじられてショックで泣き続けたことで、現在の青色になりました。"
+  },
+  {
+    question: "のび太のパパの名前は何でしょう？",
+    choices: ["野比のびお", "野比のびき", "野比のびる", "野比のび助"],
+    correct: 3,
+    explanation: "のび太のパパの名前は「野比のび助（のびのびすけ）」です。会社員でのんびりした性格です。"
+  },
+  {
+    question: "スネ夫のフルネームは何でしょう？",
+    choices: ["骨川スネキ", "骨川スネ夫", "骨川スネタ", "骨川スネジ"],
+    correct: 1,
+    explanation: "スネ夫のフルネームは「骨川スネ夫（ほねかわすねお）」です。自慢話が多く、ジャイアンの子分です。"
   }
 ];
+
+const QUIZ_SIZE = 5;
 
 let currentIndex = 0;
 let score = 0;
@@ -46,7 +78,7 @@ function shuffle(arr) {
 }
 
 function prepareQuiz() {
-  return shuffle(questions).map(q => {
+  return shuffle(questionPool).slice(0, QUIZ_SIZE).map(q => {
     const correctText = q.choices[q.correct];
     const shuffledChoices = shuffle(q.choices);
     return { ...q, choices: shuffledChoices, correct: shuffledChoices.indexOf(correctText) };
